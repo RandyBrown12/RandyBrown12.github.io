@@ -39,7 +39,7 @@ const InvestmentCalculatorInputForm = () => {
             </select>
           </div>
           <label for="salary" class="textCenter wrap">
-            Select Conversion Rate After Time:{" "}
+            Select Conversion Rate After Time:
           </label>
           <select
             class="center selectDropDown spacing"
