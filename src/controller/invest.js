@@ -45,41 +45,44 @@ let count = 0;
         return;
     }
 } */
+const isNumber = number => typeof number === "number" && !isNaN(number);
 
 export const takeHomePay = (workHours, incomeBeforeTax, salaryTimeOption, afterCalculationTimeOption, selfEmployed) =>
 {
     let federalTaxedIncome = 0, stateTaxedIncome = 0, ficaTaxedIncome = 0, incomeAfterTax = 0;
-    try {
-        if ((isNaN(workHours) && salaryTimeOption === "Hour") || isNaN(incomeBeforeTax)) {
+    try 
+    {
+        if((!isNumber(workHours) && salaryTimeOption === "Hour") || !isNumber(incomeBeforeTax)) {
             throw "Please enter numbers in the textboxes!";
-        } else if(incomeBeforeTax <= 0 || (salaryTimeOption === "Hour" && workHours <= 0)) {
+        } else if((workHours <= 0 && (salaryTimeOption === "Hour") || incomeBeforeTax <= 0)) {
             throw "Please enter positive numbers in the textboxes!";
-        } else if(salaryTimeOption === "Hour" && workHours > 168) {
+        } else if((workHours > 168 && salaryTimeOption === "Hour")) {
             throw "You can't work over 168 hours every week!";
         }
 
+        if (salaryTimeOption === "Hour") {
+            incomeBeforeTax *= workHours;
+            salaryTimeOption = "Week";
+        }
+        
+        if(conversionRatiosToYear.get(salaryTimeOption) === undefined)
+            throw "No Conversion Found";
+
+        incomeBeforeTax *= conversionRatiosToYear.get(salaryTimeOption);
+        setBracketMaximum(incomeBeforeTax);
+    
+        federalTaxedIncome = getTaxRate(incomeBeforeTax, "Federal");
+        stateTaxedIncome = getTaxRate(incomeBeforeTax, "State");
+        ficaTaxedIncome = getFicaTaxRate(incomeBeforeTax, selfEmployed);
+    
+        incomeAfterTax = (incomeBeforeTax - (federalTaxedIncome + stateTaxedIncome + ficaTaxedIncome)).toFixed(2);
+        if(conversionRatiosToYear.get(afterCalculationTimeOption) === undefined)
+            throw "No Conversion Found";
+        incomeBeforeTax = parseFloat((incomeBeforeTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2));
+        incomeAfterTax = parseFloat((incomeAfterTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2));
     } catch (exception) {
-        window.alert(exception);
         return null;
     }
-
-    if (salaryTimeOption === "Hour") {
-        incomeBeforeTax *= workHours;
-        salaryTimeOption = "Week";
-    }
-    
-    incomeBeforeTax *= conversionRatiosToYear.get(salaryTimeOption);
-    setBracketMaximum(incomeBeforeTax);
-
-    federalTaxedIncome = getTaxRate(incomeBeforeTax, "Federal");
-    stateTaxedIncome = getTaxRate(incomeBeforeTax, "State");
-    ficaTaxedIncome = getFicaTaxRate(incomeBeforeTax, selfEmployed);
-
-    incomeAfterTax = incomeBeforeTax - (federalTaxedIncome + stateTaxedIncome + ficaTaxedIncome);
-    incomeAfterTax = incomeAfterTax.toFixed(2);
-
-    incomeBeforeTax = (incomeBeforeTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2);
-    incomeAfterTax = (incomeAfterTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2);
 
     return { incomeBeforeTax, incomeAfterTax, federalTaxedIncome, stateTaxedIncome, ficaTaxedIncome};
 }

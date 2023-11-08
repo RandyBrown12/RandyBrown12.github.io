@@ -5,7 +5,7 @@ const InvestmentCalculatorAfterCalculation = (props) => {
     const object = takeHomePay(props.input.hours, 
         props.input.salary, props.input.salaryConversionRate, 
         props.input.salaryConversionRateAfterTax, props.input.selfEmployeed);
-    if(object.hours === null || object.salary === null) {
+    if(object === null) {
         return;
     }
     
