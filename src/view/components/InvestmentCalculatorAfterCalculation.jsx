@@ -1,23 +1,25 @@
 import { takeHomePay } from "../../controller/invest";
+import { TaxChart } from "../../controller/taxChart";
 
 const InvestmentCalculatorAfterCalculation = (props) => {
 
+    console.log(props.input);
     const object = takeHomePay(props.input.hours, 
         props.input.salary, props.input.salaryConversionRate, 
         props.input.salaryConversionRateAfterTax, props.input.selfEmployeed);
-    if(object === null) {
+
+    if(!object) {
         return;
     }
     
     return (
         <>
-            <div class="canvas__center">
-                <canvas height="400" width="700" class="canvas__donutChart hide" id="donutChart" />
-            </div>
             <form id="afterCalculation" className="form__bg calculateForm spacing">
                 <p className="center"> Before Tax: ${object.incomeBeforeTax} / {props.input.salaryConversionRateAfterTax} </p>
                 <p className="center"> After Tax: ${object.incomeAfterTax} / {props.input.salaryConversionRateAfterTax} </p>
             </form>
+            <TaxChart allTaxes={[object.stateTaxedIncome, object.federalTaxedIncome, object.ficaTaxedIncome, object.incomeAfterTax]}
+                incomeBeforeTax={object.incomeBeforeTax} />
             <p id="afterCalculationInfo" class="textCenter spacing hide">
             The IRS uses <a
                 href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2022">tax

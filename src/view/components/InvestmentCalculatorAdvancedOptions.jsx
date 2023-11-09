@@ -4,7 +4,7 @@ const InvestmentCalculatorAdvancedOptions = (props) => {
             <h1>
                 <p className="center">Advanced Options:</p>
                 <div className="center">
-                    <input onChanged={props.employed} type="checkbox" name="selfEmployeed" id="selfEmployeed" />
+                    <input onChange={props.employed} type="checkbox" name="selfEmployeed" id="selfEmployeed" />
                     <label for="selfEmployeed">Self Employeed?</label>
                 </div>
                 <div className="center">

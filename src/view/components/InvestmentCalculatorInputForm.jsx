@@ -2,6 +2,7 @@ import { useState } from "react";
 import InvestmentCalculatorAdvancedOptions from "./InvestmentCalculatorAdvancedOptions";
 import InvestmentCalculatorDebtCalculator from "./InvestmentCalculatorDebtCalculator";
 import InvestmentCalculatorAfterCalculation from "./InvestmentCalculatorAfterCalculation.jsx";
+import DonutChart from "../../controller/taxChart.jsx";
 
 const InvestmentCalculatorInputForm = () => {
 
@@ -10,15 +11,41 @@ const InvestmentCalculatorInputForm = () => {
   const [afterCalcuations, setAfterCalcuations] = useState(() => false);
   const [salaryConversionRate, setSalaryConversionRate] = useState(() => "Hour");
   const [salaryConversionRateAfterTax, setSalaryConversionRateAfterTax] = useState(() => "Year");
+  const [hoursDisabled, setHoursDisabled] = useState(() => false);
   const [selfEmployeed, setSelfEmployeed] = useState(() => false);
   const [hours, setHours] = useState(() => '');
   const [salary, setSalary] = useState(() => '');
+  const [hoursPlaceholder, setHoursPlaceholder] = useState(() => "Ex: 15");
 
   const inputUpdate = e => {
-    if (e.target.name === 'hours')
-      setHours(e.target.value);
-    else if (e.target.name === 'salary')
-      setSalary(e.target.value);
+    switch (e.target.name) {
+      case 'hours':
+        setHours(e.target.value);
+        break;
+      case 'salary':
+        setSalary(e.target.value);
+        break;
+      case 'salaryConversionRate':
+        if(e.target.value === "Hour") {
+          setHoursDisabled(false);
+          setHoursPlaceholder("Ex: 15");
+        } else {
+          setHoursDisabled(true);
+          setHoursPlaceholder("");
+        }
+        setSalaryConversionRate(e.target.value);
+        break;
+      case 'afterCalculationTime':
+        setSalaryConversionRateAfterTax(e.target.value);
+        break;
+      case 'selfEmployeed':
+        setSelfEmployeed(!selfEmployeed);
+        break;
+      default:
+        window.alert("Input Update Error");
+        break;
+    }
+
     if (afterCalcuations)
       setAfterCalcuations(false);
   }
@@ -30,17 +57,18 @@ const InvestmentCalculatorInputForm = () => {
         <label for="hours" className="textCenter wrap">
           Hours planning to Work per week:
         </label>
-        <input value={hours} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxlength="3"
-          placeholder="Ex: 15" />
+        <input name="hours" value={hours} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxlength="3" disabled={hoursDisabled} 
+          placeholder={hoursPlaceholder}/>
         <label for="salary" className="textCenter wrap">
           Expected Salary before taxes:
         </label>
         <div className="center">
-          <input value={salary} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxlength="9" placeholder="Ex: 60000" />
+          <input name="salary" value={salary} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxlength="9" placeholder="Ex: 60000" />
           <select
+            name="salaryConversionRate"
             className="selectDropDown"
             value={salaryConversionRate}
-            onChange={e => setSalaryConversionRate(e.target.value)}
+            onChange={e => inputUpdate(e)}
           >
             <option value="Hour">Hour</option>
             <option value="Week">Week</option>
@@ -52,7 +80,7 @@ const InvestmentCalculatorInputForm = () => {
         </div>
         <label for="salary" class="textCenter wrap"> Select Conversion Rate After Time: </label>
         <select class="center selectDropDown spacing" name="afterCalculationTime" value={salaryConversionRateAfterTax}
-          onChange={e => setSalaryConversionRateAfterTax(e.target.value)}>
+          onChange={e => inputUpdate(e)}>
           <option value="Year">Year</option>
           <option value="Month">Month</option>
           <option value="Semimonth">Semimonth</option>
@@ -72,10 +100,10 @@ const InvestmentCalculatorInputForm = () => {
         </div>
       </form>
       {afterCalcuations && <InvestmentCalculatorAfterCalculation
-        input={{ hours, salary, salaryConversionRate, salaryConversionRateAfterTax, selfEmployeed }} />}
+        input={{ hours:parseFloat(hours), salary:parseFloat(salary), salaryConversionRate, salaryConversionRateAfterTax, selfEmployeed }} />}
       {visiblilityAdvancedOptions && <InvestmentCalculatorAdvancedOptions
         visibility={() => setDebtCalculatorVisibility(!debtCalculatorVisibility)}
-        employed={() => setSelfEmployeed(!selfEmployeed)} />}
+        employed={e => inputUpdate(e)} />}
       {debtCalculatorVisibility && <InvestmentCalculatorDebtCalculator />}
     </>
   );

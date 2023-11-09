@@ -81,6 +81,7 @@ export const takeHomePay = (workHours, incomeBeforeTax, salaryTimeOption, afterC
         incomeBeforeTax = parseFloat((incomeBeforeTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2));
         incomeAfterTax = parseFloat((incomeAfterTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2));
     } catch (exception) {
+        window.alert(exception);
         return null;
     }
 
