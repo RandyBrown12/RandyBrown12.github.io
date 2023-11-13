@@ -2,7 +2,6 @@ import { useState } from "react";
 import InvestmentCalculatorAdvancedOptions from "./InvestmentCalculatorAdvancedOptions";
 import InvestmentCalculatorDebtCalculator from "./InvestmentCalculatorDebtCalculator";
 import InvestmentCalculatorAfterCalculation from "./InvestmentCalculatorAfterCalculation.jsx";
-import DonutChart from "../../controller/taxChart.jsx";
 
 const InvestmentCalculatorInputForm = () => {
 
@@ -15,7 +14,8 @@ const InvestmentCalculatorInputForm = () => {
   const [selfEmployeed, setSelfEmployeed] = useState(() => false);
   const [hours, setHours] = useState(() => '');
   const [salary, setSalary] = useState(() => '');
-  const [hoursPlaceholder, setHoursPlaceholder] = useState(() => "Ex: 15");
+  const [hoursPlaceholder, setHoursPlaceholder] = useState(() => "Ex: 199");
+  // const [income, setIncome] = useState(() => 0);
 
   const inputUpdate = e => {
     switch (e.target.name) {
@@ -32,6 +32,7 @@ const InvestmentCalculatorInputForm = () => {
         } else {
           setHoursDisabled(true);
           setHoursPlaceholder("");
+          setHours("");
         }
         setSalaryConversionRate(e.target.value);
         break;
@@ -50,20 +51,33 @@ const InvestmentCalculatorInputForm = () => {
       setAfterCalcuations(false);
   }
 
+  const resetStates = () => {
+    setHours('');
+    setSalary('');
+    setSalaryConversionRate("Hour");
+    setSalaryConversionRateAfterTax("Year");
+    setHoursDisabled(false);
+    setHoursPlaceholder("Ex: 15");
+    setSelfEmployeed(false);
+    setAfterCalcuations(false);
+    setVisiblilityAdvancedOptions(false);
+    setDebtCalculatorVisibility(false);
+  }
+
   return (
     <>
       <h2 className="textCenter spacing"> Calculate your take home pay for the job </h2>
       <form className="form__bg calculateForm spacing">
-        <label for="hours" className="textCenter wrap">
+        <label htmlFor="hours" className="textCenter wrap">
           Hours planning to Work per week:
         </label>
-        <input name="hours" value={hours} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxlength="3" disabled={hoursDisabled} 
+        <input id="hours" name="hours" value={hours} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxLength="3" disabled={hoursDisabled} 
           placeholder={hoursPlaceholder}/>
-        <label for="salary" className="textCenter wrap">
+        <label htmlFor="salary" className="textCenter wrap">
           Expected Salary before taxes:
         </label>
         <div className="center">
-          <input name="salary" value={salary} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxlength="9" placeholder="Ex: 60000" />
+          <input id="salary" name="salary" value={salary} onChange={e => inputUpdate(e)} type="text" className="center removeHover form__input" maxLength="9" placeholder="Ex: 60000" />
           <select
             name="salaryConversionRate"
             className="selectDropDown"
@@ -78,8 +92,8 @@ const InvestmentCalculatorInputForm = () => {
             <option value="Year">Year</option>
           </select>
         </div>
-        <label for="salary" class="textCenter wrap"> Select Conversion Rate After Time: </label>
-        <select class="center selectDropDown spacing" name="afterCalculationTime" value={salaryConversionRateAfterTax}
+        <label htmlFor="conversionRate" className="textCenter wrap" > Select Conversion Rate After Time: </label>
+        <select id="conversionRate" className="center selectDropDown spacing" name="afterCalculationTime" value={salaryConversionRateAfterTax}
           onChange={e => inputUpdate(e)}>
           <option value="Year">Year</option>
           <option value="Month">Month</option>
@@ -87,14 +101,14 @@ const InvestmentCalculatorInputForm = () => {
           <option value="Biweek">Biweek</option>
           <option value="Week">Week</option>
         </select>
-        <div class="center">
-          <button type="button" id="compute" class="calculateForm__button" name="compute" onClick={() => setAfterCalcuations(true)}>
+        <div className="center">
+          <button type="button" id="compute" className="calculateForm__button" name="compute" onClick={() => setAfterCalcuations(true)}>
             Calculate Pay
           </button>
-          <button type="button" class="calculateForm__button">
+          <button type="button" className="calculateForm__button" onClick={resetStates}>
             Reset
           </button>
-          <button type="button" class="calculateForm__button" onClick={() => setVisiblilityAdvancedOptions(!visiblilityAdvancedOptions)}>
+          <button type="button" className="calculateForm__button" onClick={() => setVisiblilityAdvancedOptions(!visiblilityAdvancedOptions)}>
             Advanced
           </button>
         </div>
@@ -104,7 +118,7 @@ const InvestmentCalculatorInputForm = () => {
       {visiblilityAdvancedOptions && <InvestmentCalculatorAdvancedOptions
         visibility={() => setDebtCalculatorVisibility(!debtCalculatorVisibility)}
         employed={e => inputUpdate(e)} />}
-      {debtCalculatorVisibility && <InvestmentCalculatorDebtCalculator />}
+      {debtCalculatorVisibility && <InvestmentCalculatorDebtCalculator/>}
     </>
   );
 }

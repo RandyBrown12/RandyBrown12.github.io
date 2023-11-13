@@ -3,15 +3,13 @@ import { TaxChart } from "../../controller/taxChart";
 
 const InvestmentCalculatorAfterCalculation = (props) => {
 
-    console.log(props.input);
     const object = takeHomePay(props.input.hours, 
         props.input.salary, props.input.salaryConversionRate, 
         props.input.salaryConversionRateAfterTax, props.input.selfEmployeed);
 
-    if(!object) {
+    if(!object) 
         return;
-    }
-    
+
     return (
         <>
             <form id="afterCalculation" className="form__bg calculateForm spacing">
@@ -20,9 +18,9 @@ const InvestmentCalculatorAfterCalculation = (props) => {
             </form>
             <TaxChart allTaxes={[object.stateTaxedIncome, object.federalTaxedIncome, object.ficaTaxedIncome, object.incomeAfterTax]}
                 incomeBeforeTax={object.incomeBeforeTax} />
-            <p id="afterCalculationInfo" class="textCenter spacing hide">
+            <p id="afterCalculationInfo" className="textCenter spacing hide">
             The IRS uses <a
-                href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2022">tax
+                href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-html-tax-year-2022">tax
                 brackets</a> to calcuate the marginal federal tax <br/>
             Oklahoma State uses <a
                 href="https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-2022.pdf">

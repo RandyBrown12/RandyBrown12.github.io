@@ -33,7 +33,6 @@ export function getTaxRate(grossIncome, chosenTaxBracket)
             taxes += marginalTaxRate * (maxAllotedIncome - prevMaxIncome);
             prevMaxIncome = maxAllotedIncome;
         } else {
-            console.log(grossIncome - prevMaxIncome);
             taxes += marginalTaxRate * (grossIncome - prevMaxIncome);
             break;
         }
