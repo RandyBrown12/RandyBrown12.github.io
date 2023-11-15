@@ -8,9 +8,9 @@ ChartJS.register(ChartDataLabels);
 const data = {
     labels: ['Federal Tax', 'State Tax', 'FICA', 'Remaining Income'],
     datasets: [{
-    data: undefined,
-    backgroundColor: ['#000000','#E18A18','#1912DB','#41AC1A'],
-    borderWidth: 1
+        data: undefined,
+        backgroundColor: ['#000000','#E18A18','#1912DB','#41AC1A'],
+        borderWidth: 1
     }],
 };
 

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, createContext } from "react";
 import InvestmentCalculatorAdvancedOptions from "./InvestmentCalculatorAdvancedOptions";
 import InvestmentCalculatorDebtCalculator from "./InvestmentCalculatorDebtCalculator";
 import InvestmentCalculatorAfterCalculation from "./InvestmentCalculatorAfterCalculation.jsx";
 
-const InvestmentCalculatorInputForm = () => {
+export const mainAppContext = createContext(null);
 
+const InvestmentCalculatorInputForm = () => {
+  
   const [visiblilityAdvancedOptions, setVisiblilityAdvancedOptions] = useState(() => false);
   const [debtCalculatorVisibility, setDebtCalculatorVisibility] = useState(() => false);
   const [afterCalcuations, setAfterCalcuations] = useState(() => false);
@@ -15,7 +17,7 @@ const InvestmentCalculatorInputForm = () => {
   const [hours, setHours] = useState(() => '');
   const [salary, setSalary] = useState(() => '');
   const [hoursPlaceholder, setHoursPlaceholder] = useState(() => "Ex: 199");
-  // const [income, setIncome] = useState(() => 0);
+  const [income, setIncome] = useState(() => null);
 
   const inputUpdate = e => {
     switch (e.target.name) {
@@ -49,6 +51,8 @@ const InvestmentCalculatorInputForm = () => {
 
     if (afterCalcuations)
       setAfterCalcuations(false);
+      setDebtCalculatorVisibility(false);
+      setVisiblilityAdvancedOptions(false);
   }
 
   const resetStates = () => {
@@ -113,12 +117,19 @@ const InvestmentCalculatorInputForm = () => {
           </button>
         </div>
       </form>
-      {afterCalcuations && <InvestmentCalculatorAfterCalculation
-        input={{ hours:parseFloat(hours), salary:parseFloat(salary), salaryConversionRate, salaryConversionRateAfterTax, selfEmployeed }} />}
+      {afterCalcuations && 
+        <mainAppContext.Provider value={setIncome}>
+          <InvestmentCalculatorAfterCalculation
+            input={{ hours:parseFloat(hours), 
+            salary:parseFloat(salary), 
+            salaryConversionRate, 
+            salaryConversionRateAfterTax, 
+            selfEmployeed }} />
+        </mainAppContext.Provider>}
       {visiblilityAdvancedOptions && <InvestmentCalculatorAdvancedOptions
         visibility={() => setDebtCalculatorVisibility(!debtCalculatorVisibility)}
         employed={e => inputUpdate(e)} />}
-      {debtCalculatorVisibility && <InvestmentCalculatorDebtCalculator/>}
+      {debtCalculatorVisibility && <InvestmentCalculatorDebtCalculator income={income}/>}
     </>
   );
 }
