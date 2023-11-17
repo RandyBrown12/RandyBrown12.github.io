@@ -41,7 +41,7 @@ const options = {
 export function DebtChart(props) {
     data.labels = props.chartData.dateList;
     data.datasets[0].data = props.chartData.debtList;
-    console.table(data);
+    console.table(props.chartData.debtList);
     return (
         <div className="canvas__center">
             <Line className="canvas__donutChart" data={data} options={options} width="400" height="700" />

@@ -15,7 +15,7 @@ const Navbar = () => {
                 }
                 {location.pathname === "/InvestmentCalculator" &&
                     <ul className="header__ul">
-                        <li><img src={moneyIcon} alt="Money Icon" width="50" height="50"/></li>
+                        <li><img src={moneyIcon} alt="Money Icon" width="80" height="75"/></li>
                         <li><Link className="header__link" to="/">About Me</Link></li>
                         <li><Link className="header__link" to="/OtherProjects">Other Projects</Link></li>
                     </ul>

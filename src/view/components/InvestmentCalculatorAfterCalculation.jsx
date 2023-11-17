@@ -1,19 +1,19 @@
 import { takeHomePay } from "../../controller/invest";
 import { TaxChart } from "../../controller/taxChart";
-import { useContext } from "react";
-import { mainAppContext } from "./InvestmentCalculatorInputForm";
-
+import { debtList } from "../../controller/debtList";
+import { DebtChart } from "../../controller/debtChart";
 const InvestmentCalculatorAfterCalculation = (props) => {
-
-    const setIncome = useContext(mainAppContext);
-    const taxData = takeHomePay(props.input.hours, 
-        props.input.salary, props.input.salaryConversionRate, 
-        props.input.salaryConversionRateAfterTax, props.input.selfEmployeed);
+    
+    const taxData = takeHomePay(props.input.hours,
+        props.input.salary,
+        props.input.salaryConversionRate,
+        props.input.salaryConversionRateAfterTax,
+        props.input.selfEmployeed);
 
     if(!taxData) 
         return;
-    
-    setIncome(taxData.incomeAfterTax);
+
+    let chartData = debtList({income:taxData.incomeAfterTax, debtsList:props.debtInfo});
     return (
         <>
             <form id="afterCalculation" className="form__bg calculateForm spacing">
@@ -22,6 +22,7 @@ const InvestmentCalculatorAfterCalculation = (props) => {
             </form>
             <TaxChart allTaxes={[taxData.stateTaxedIncome, taxData.federalTaxedIncome, taxData.ficaTaxedIncome, taxData.incomeAfterTax]}
                 incomeBeforeTax={taxData.incomeBeforeTax} />
+            {chartData && <DebtChart chartData={chartData}/>}
             <p id="afterCalculationInfo" className="textCenter spacing hide">
             The IRS uses <a
                 href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-html-tax-year-2022">tax
@@ -32,7 +33,7 @@ const InvestmentCalculatorAfterCalculation = (props) => {
             FICA uses <a href="https://www.ssa.gov/oact/cola/cbb.html">tax brackets</a> to calcuate Federal Insurance
             Contributions Act taxes
             </p>
-        </> 
+        </>
     );
 }
  
