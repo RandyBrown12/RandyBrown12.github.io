@@ -6,7 +6,7 @@ const InvestmentCalculatorDebtCalculator = (props) => {
     const [debtInfo, setDebtInfo] = useState(() => [ ]);
     const [principal, setPrincipal] = useState(() => 0);
     const [interest, setInterest] = useState(() => 0);
-    const [mMP, setMMP] = useState(() => 0);
+    const [loanMonths, setLoanMonths] = useState(() => 0);
     const [chartData, setChartData] = useState(() => null);
     const maxDebts = 5;
     //debtList({income, debtsList:debtInfo})
@@ -18,8 +18,8 @@ const InvestmentCalculatorDebtCalculator = (props) => {
             case 'interest':
                 setInterest(e.target.value);
                 break;
-            case 'mMP':
-                setMMP(e.target.value);
+            case 'loanMonths':
+                setLoanMonths(e.target.value);
                 break;
             default:
                 window.alert("Input Update Error");
@@ -30,7 +30,7 @@ const InvestmentCalculatorDebtCalculator = (props) => {
     const checkInputs = () => {
         try 
         {
-            if(!isNumber(parseFloat(principal)) || !isNumber(parseFloat(interest)) || !isNumber(parseFloat(mMP)))
+            if(!isNumber(parseFloat(principal)) || !isNumber(parseFloat(interest)) || !isNumber(parseFloat(loanMonths)))
             {
                 throw new Error("Debt Calculator does not have correct format!");
             }
@@ -45,7 +45,7 @@ const InvestmentCalculatorDebtCalculator = (props) => {
         }
 
         setChartData(false);
-        setDebtInfo([...debtInfo, [principal, interest, mMP]]);
+        setDebtInfo([...debtInfo, [principal, interest, loanMonths]]);
     }
 
     const removeDebt = e => {
@@ -70,8 +70,8 @@ const InvestmentCalculatorDebtCalculator = (props) => {
                         placeholder="Ex: 4.05%" onChange={e => updateInput(e)} />
                 </div>
                 <div className="center">
-                    <label htmlFor="mMP" className="textCenter wrap">Monthly Minimum <br/> Payments: </label>
-                    <input type="text" id="mMP" className="center removeHover form__input" maxLength="9" placeholder="Ex: 500" onChange={e => updateInput(e)}/>
+                    <label htmlFor="loanMonths" className="textCenter wrap">Loan Months: </label>
+                    <input type="text" id="loanMonths" className="center removeHover form__input" maxLength="9" placeholder="Ex: 12" onChange={e => updateInput(e)}/>
                 </div>
                 <button type="button" id="addDebt" className="calculateForm__button center__small spacing" name="addDebt" onClick={checkInputs}>Add Debt</button>
                 <button type="button" id="test" className="calculateForm__button center__small spacing" name="test" onClick={calculateDebt}>Test</button>
@@ -79,7 +79,7 @@ const InvestmentCalculatorDebtCalculator = (props) => {
                 
                 <ul id="debtInfo" className="removeBulletPointIcons center">
                     {debtInfo.map((debt, index) => {
-                        return <li onClick={e => removeDebt(e)} id={index} key={index}> Debt {index + 1}: Principal: {debt[0]} Interest: {debt[1]} MMP: {debt[2]} </li>
+                        return <li onClick={e => removeDebt(e)} id={index} key={index}> Debt {index + 1}: Principal: {debt[0]} Interest: {debt[1]} Loan Term : {debt[2] + " months"} </li>
                     })}
                 </ul>
             </form>
