@@ -13,7 +13,12 @@ const InvestmentCalculatorAfterCalculation = (props) => {
     if(!taxData) 
         return;
 
-    let chartData = debtList({income:taxData.incomeAfterTax, debtsList:props.debtInfo});
+    let chartData = null;
+
+    if(props.debtInfo.length > 0) {
+        chartData = debtList({income:taxData.incomeAfterTax, debtsList:props.debtInfo});
+    }
+
     return (
         <>
             <form id="afterCalculation" className="form__bg calculateForm spacing">

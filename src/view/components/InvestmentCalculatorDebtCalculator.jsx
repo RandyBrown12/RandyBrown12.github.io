@@ -10,8 +10,8 @@ const InvestmentCalculatorDebtCalculator = (props) => {
     const [loanMonths, setLoanMonths] = useState(() => 0);
     const maxDebts = 5;
 
-    console.log("Debts Listed:" + props.debtInfo);
     const removeDebt = e => {
+        props.removeAfterCalculations();
         setDebtInfo(props.debtInfo.filter((_, index) => index !== parseInt(e.target.id)));
     }
 
@@ -49,6 +49,7 @@ const InvestmentCalculatorDebtCalculator = (props) => {
             return;
         }
 
+        props.removeAfterCalculations();
         setDebtInfo([...props.debtInfo, [principal, interest, loanMonths]]);
     }
 

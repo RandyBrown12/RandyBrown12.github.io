@@ -17,11 +17,11 @@ ChartJS.register(ChartDataLabels);
 const data = {
     labels: undefined,
     datasets: [{
-        label: 'Debt Calculator',
+        label: 'Sum of Debt',
         data: undefined,
         borderColor: 'rgb(255, 0, 0)',
-        borderWidth: 1,
-        fill: false
+        borderWidth: 0.5,
+        fill: false,
     }]
 }
 
@@ -34,6 +34,16 @@ const options = {
             font: {
                 size: 15,
             }
+        },
+        title: 
+        {
+            display: true, 
+            text:'Amount of months to pay off debt',
+            font: {
+                family: 'Arial',
+                size: 16,
+            },
+            colors: 'rgba(0, 0, 0, 1)',
         }
     }
 }
@@ -41,7 +51,6 @@ const options = {
 export function DebtChart(props) {
     data.labels = props.chartData.dateList;
     data.datasets[0].data = props.chartData.debtList;
-    console.table(props.chartData.debtList);
     return (
         <div className="canvas__center">
             <Line className="canvas__donutChart" data={data} options={options} width="400" height="700" />

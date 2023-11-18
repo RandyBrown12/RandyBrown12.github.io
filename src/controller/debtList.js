@@ -1,4 +1,4 @@
-import { convertPercentToDecimal } from "./utility";
+import { convertPercentToDecimal, sumOfArray } from "./utility";
 //inputVariablesObject = {income: income, debtsList:debtsList[]}
 export const debtList = inputVariablesObject => {
     let monthlyIncome = inputVariablesObject.income;
@@ -7,21 +7,29 @@ export const debtList = inputVariablesObject => {
     //currentDebts = [{},{}]
     for(let i = 0; i < currentDebts.length; i++) {
         currentDebts[i] = {principal:parseFloat(currentDebts[i][0]),
-            interest:convertPercentToDecimal(parseFloat(currentDebts[i][1]), 100),
+            interest:convertPercentToDecimal(parseFloat(currentDebts[i][1]), 100, 4),
             loanMonths:parseFloat(currentDebts[i][2])}
         currentDebts[i] = {...currentDebts[i], 
                         monthlyPayment: currentDebts[i].principal * currentDebts[i].interest / currentDebts[i].loanMonths,
                         interestSum: 0}
     }
-    // Perform calculations
-    console.table(currentDebts);
     monthlyIncome = convertPercentToDecimal(monthlyIncome, 12);
 
+    //
     let date = new Date();
     let freedUpIncome = 0;
     let dateList = [];
     let debtList = [];
     try {
+        //Flag
+        if(currentDebts.length === 0) {
+            throw new Error("No Debts have been inputed!");
+        } else {
+            dateList.push(new Intl.DateTimeFormat("en-US",{year: 'numeric', month:"long"}).format(date));
+            date.setMonth(date.getMonth() + 1);
+            debtList.push(sumOfArray(currentDebts.map(object => object.principal)));
+        }
+
         while(currentDebts.length !== 0) {
             let currentIncome = monthlyIncome + freedUpIncome;
 
@@ -65,6 +73,7 @@ export const debtList = inputVariablesObject => {
             for(const {principal} of currentDebts) {
                 sumPrincipals += principal;
             }
+
             dateList.push(new Intl.DateTimeFormat("en-US",{year: 'numeric', month:"long"}).format(date));
             date.setMonth(date.getMonth() + 1);
             debtList.push(sumPrincipals.toFixed(2));
@@ -80,12 +89,12 @@ export const debtList = inputVariablesObject => {
     }
 
     //Formatting large amount of data
-    if(debtList.length >= 75) {
-        debtList = debtList.filter((_, index) => index % 6 === 0 || index === debtList.length - 1)
-        dateList = dateList.filter((_, index) => index % 6 === 0 || index === debtList.length - 1)
-    } else if(debtList.length >= 25) {
-        debtList = debtList.filter((_, index) => index % 3 === 0 || index === debtList.length - 1)
-        dateList = dateList.filter((_, index) => index % 3 === 0 || index === debtList.length - 1)
+    if(debtList.length >= 60) {
+        debtList = debtList.filter((_, index) => index % 6 === 0 || index === debtList.length - 1);
+        dateList = dateList.filter((_, index) => index % 6 === 0 || index === dateList.length - 1);
+    } else if(debtList.length >= 20) {
+        debtList = debtList.filter((_, index) => index % 3 === 0 || index === debtList.length - 1);
+        dateList = dateList.filter((_, index) => index % 3 === 0 || index === dateList.length - 1);
     }
 
     return {dateList, debtList};

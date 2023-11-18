@@ -7,7 +7,7 @@ export const mainAppContext = createContext(null);
 
 const InvestmentCalculatorInputForm = () => {
   
-  const [visiblilityAdvancedOptions, setVisiblilityAdvancedOptions] = useState(() => false);
+  const [advancedOptionsVisiblility, setVisiblilityAdvancedOptions] = useState(() => false);
   const [debtCalculatorVisibility, setDebtCalculatorVisibility] = useState(() => false);
   const [afterCalcuations, setAfterCalcuations] = useState(() => false);
   const [salaryConversionRate, setSalaryConversionRate] = useState(() => "Hour");
@@ -18,6 +18,10 @@ const InvestmentCalculatorInputForm = () => {
   const [salary, setSalary] = useState(() => '');
   const [hoursPlaceholder, setHoursPlaceholder] = useState(() => "Ex: 40");
   const [debtInfo, setDebtInfo] = useState(() => [ ]);
+
+  const removeAfterCalculations = () => {
+    setAfterCalcuations(false);
+  }
 
   const inputUpdate = e => {
     switch (e.target.name) {
@@ -48,9 +52,7 @@ const InvestmentCalculatorInputForm = () => {
         window.alert("Input Update Error");
         break;
     }
-
-    if (afterCalcuations)
-      setAfterCalcuations(false);
+    removeAfterCalculations();
   }
 
   const resetStates = () => {
@@ -110,25 +112,25 @@ const InvestmentCalculatorInputForm = () => {
           <button type="button" className="calculateForm__button" onClick={resetStates}>
             Reset
           </button>
-          <button type="button" className="calculateForm__button" onClick={() => setVisiblilityAdvancedOptions(!visiblilityAdvancedOptions)}>
+          <button type="button" className="calculateForm__button" onClick={() => setVisiblilityAdvancedOptions(!advancedOptionsVisiblility)}>
             Advanced
           </button>
         </div>
       </form>
-      {afterCalcuations && 
+      {afterCalcuations &&  
           <InvestmentCalculatorAfterCalculation
             input={{ hours:parseFloat(hours), 
             salary:parseFloat(salary), 
             salaryConversionRate, 
             salaryConversionRateAfterTax, 
             selfEmployeed }} 
-            debtInfo={debtInfo} />}
-      {visiblilityAdvancedOptions && <InvestmentCalculatorAdvancedOptions
+            debtInfo={debtInfo}/>}
+      {advancedOptionsVisiblility && <InvestmentCalculatorAdvancedOptions
         visibility={() => setDebtCalculatorVisibility(!debtCalculatorVisibility)}
         employed={e => inputUpdate(e)} />}
       {debtCalculatorVisibility && 
         <mainAppContext.Provider value={setDebtInfo}>
-          <InvestmentCalculatorDebtCalculator debtInfo={debtInfo} />
+          <InvestmentCalculatorDebtCalculator debtInfo={debtInfo} removeAfterCalculations={() => removeAfterCalculations()} />
         </mainAppContext.Provider>}
     </>
   );
