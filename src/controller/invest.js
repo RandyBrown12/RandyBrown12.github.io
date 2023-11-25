@@ -1,6 +1,6 @@
 import { getTaxRate, getFicaTaxRate, setBracketMaximum } from "./taxRates.js";
-import { isNumber } from "./utility.js"
-const conversionRatiosToYear = new Map([["Week", 52.1429], ["Biweek", 26.07145], ["Semimonth", 24], ["Month", 12], ["Year", 1]]);
+import { fixedDecimalPlaces, isNumber } from "./utility.js"
+export const conversionRatiosToYear = new Map([["Week", 52.1429], ["Biweek", 26.07145], ["Semimonth", 24], ["Month", 12], ["Year", 1]]);
 
 export const takeHomePay = (workHours, incomeBeforeTax, salaryTimeOption, afterCalculationTimeOption, selfEmployed) =>
 {
@@ -25,16 +25,20 @@ export const takeHomePay = (workHours, incomeBeforeTax, salaryTimeOption, afterC
 
         incomeBeforeTax *= conversionRatiosToYear.get(salaryTimeOption);
         setBracketMaximum(incomeBeforeTax);
+        
+        federalTaxedIncome = fixedDecimalPlaces(getTaxRate(incomeBeforeTax, "Federal"));
+        stateTaxedIncome = fixedDecimalPlaces(getTaxRate(incomeBeforeTax, "State"));
+        ficaTaxedIncome = fixedDecimalPlaces(getFicaTaxRate(incomeBeforeTax, selfEmployed));
     
-        federalTaxedIncome = getTaxRate(incomeBeforeTax, "Federal");
-        stateTaxedIncome = getTaxRate(incomeBeforeTax, "State");
-        ficaTaxedIncome = getFicaTaxRate(incomeBeforeTax, selfEmployed);
-    
-        incomeAfterTax = (incomeBeforeTax - (federalTaxedIncome + stateTaxedIncome + ficaTaxedIncome)).toFixed(2);
-        incomeBeforeTax = parseFloat((incomeBeforeTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2));
-        incomeAfterTax = parseFloat((incomeAfterTax / conversionRatiosToYear.get(afterCalculationTimeOption)).toFixed(2));
-    } catch (exception) {
-        window.alert(exception);
+        incomeAfterTax = fixedDecimalPlaces(incomeBeforeTax - (federalTaxedIncome + stateTaxedIncome + ficaTaxedIncome));
+
+        incomeBeforeTax = fixedDecimalPlaces(incomeBeforeTax / conversionRatiosToYear.get(afterCalculationTimeOption));
+        incomeAfterTax = fixedDecimalPlaces(incomeAfterTax / conversionRatiosToYear.get(afterCalculationTimeOption));
+        federalTaxedIncome = fixedDecimalPlaces(federalTaxedIncome / conversionRatiosToYear.get(afterCalculationTimeOption));
+        stateTaxedIncome = fixedDecimalPlaces(stateTaxedIncome / conversionRatiosToYear.get(afterCalculationTimeOption));
+        ficaTaxedIncome = fixedDecimalPlaces(ficaTaxedIncome / conversionRatiosToYear.get(afterCalculationTimeOption));
+    } catch (err) {
+        window.alert(err.message);
         return null;
     }
 

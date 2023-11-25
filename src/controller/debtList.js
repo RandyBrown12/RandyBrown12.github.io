@@ -83,8 +83,8 @@ export const debtList = inputVariablesObject => {
                 throw new Error("Can't pay off debts!");
             }
         }
-    } catch(e) {
-        window.alert(e);
+    } catch(err) {
+        window.alert(err.message);
         return null;
     }
 

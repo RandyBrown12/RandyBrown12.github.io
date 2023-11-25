@@ -63,6 +63,7 @@
     --HEADER-TEXT-FONT-SIZE-CAP: 15px;
     --HEADER-WIDTH: 100%;
     --HEIGHT-SPACING: 0.4em;
+    --ELEMENT-SPACING: 0.5em;
     --LARGE-HEIGHT-SPACING: 0.8em;
     --MARGIN-AUTO-LEFT-AND-RIGHT: 0 auto 0 auto;
     --MARGIN-AUTO-TOP-AND-BOTTOM: auto 0 auto 0;
@@ -187,6 +188,11 @@ main {
     text-align: center;
 }
 
+.canvas__center {
+    margin: auto;
+    width: var(--CANVAS-CENTER-SIZE);
+}
+
 .center {
     margin: auto;
     width: var(--FORM-WIDTH-SIZE);
@@ -196,14 +202,14 @@ main {
     margin: auto;
     width: var(--FORM-WIDTH-SMALL-SIZE);
 }
-.canvas__center {
-    margin: auto;
-    width: var(--CANVAS-CENTER-SIZE);
-}
 
 .center__photo {
     margin: var(--MARGIN-AUTO-LEFT-AND-RIGHT);
     display: block;
+}
+
+.element__spacing {
+    margin-right: var(--ELEMENT-SPACING);
 }
 
 .spacing {

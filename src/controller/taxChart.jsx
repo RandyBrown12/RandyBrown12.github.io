@@ -43,7 +43,7 @@ export function TaxChart(props) {
         return (value / props.incomeBeforeTax * 100).toFixed(2) + "%";
     }
     return (
-        <div className="canvas__center">
+        <div className="canvas__center spacing" data-cy="taxChart">
             <Doughnut className="canvas__donutChart" data={data} options={options} width="400" height="700" />
         </div>
     );

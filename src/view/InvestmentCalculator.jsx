@@ -1,10 +1,10 @@
-import InvestmentCalculatorInputForm from "./components/InvestmentCalculatorInputForm";
+import InputForm from "./InvestmentCalculatorComponents/InputForm";
 
 const InvestmentCalculator = () => {
 
     return (
         <main>
-            <InvestmentCalculatorInputForm />
+            <InputForm />
         </main>
     );
 };

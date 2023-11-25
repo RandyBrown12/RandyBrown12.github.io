@@ -52,7 +52,7 @@ export function DebtChart(props) {
     data.labels = props.chartData.dateList;
     data.datasets[0].data = props.chartData.debtList;
     return (
-        <div className="canvas__center">
+        <div className="canvas__center spacing" data-cy="debtChart">
             <Line className="canvas__donutChart" data={data} options={options} width="400" height="700" />
         </div>
     );

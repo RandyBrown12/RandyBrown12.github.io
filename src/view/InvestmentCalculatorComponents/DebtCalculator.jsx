@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
 import { isNumber } from "../../controller/utility";
-import { mainAppContext } from "./InvestmentCalculatorInputForm";
+import { mainAppContext } from "./InputForm";
 
-const InvestmentCalculatorDebtCalculator = (props) => {
+const DebtCalculator = (props) => {
     
     const setDebtInfo = useContext(mainAppContext);
     const [principal, setPrincipal] = useState(() => 0);
@@ -37,15 +37,14 @@ const InvestmentCalculatorDebtCalculator = (props) => {
         {
             if(!isNumber(parseFloat(principal)) || !isNumber(parseFloat(interest)) || !isNumber(parseFloat(loanMonths)))
             {
-                throw new Error("Debt Calculator does not have correct format!");
+                throw new Error("Inputs does not have correct format!");
+            } else if(parseFloat(principal) <= 0 || parseFloat(interest) <= 0 || parseFloat(loanMonths) <= 0) {
+                throw new Error("Inputs must be greater than 0!");
+            } else if(props.debtInfo.length >= maxDebts) {
+                throw new Error("Debt Calculator has reached max amount of debts!");
             }
-        } catch (exception) {
-            window.alert(exception)
-            return;
-        }
-
-        if(props.debtInfo.length >= maxDebts) {
-            window.alert("Debt Calculator has reached max amount of debts!");
+        } catch (err) {
+            window.alert(err.message)
             return;
         }
 
@@ -54,27 +53,29 @@ const InvestmentCalculatorDebtCalculator = (props) => {
     }
 
     return (
-        <form id="debtCalculator" className="form__bg calculateForm spacing">
+        <form id="debtCalculator" className="form__bg calculateForm spacing" data-cy="debtCalculator">
             <p className="center">Debt Calculator: <br/> Find out how fast debt can be paid off with simple interest. <br/> 
             Once a debt has been added it will be calculated. </p>
             <p className="center">Add Debts:</p>
             <div className="center">
-                <label htmlFor="principal" className="textCenter wrap">Principal: </label>
+                <label htmlFor="principal" className="textCenter wrap element__spacing">Principal: </label>
                 <input type="text" id="principal" className="center removeHover form__input" maxLength="9"
-                placeholder="Ex: 15000" onChange={e => updateInput(e)}/>
+                placeholder="Ex: 15000" onChange={e => updateInput(e)} data-cy="principal"/>
             </div>
             <div className="center">
-                <label htmlFor="interest" className="textCenter wrap">Interest: </label>
+                <label htmlFor="interest" className="textCenter wrap element__spacing">Interest: </label>
                 <input type="text" id="interest" className="center removeHover form__input" maxLength="6"
-                    placeholder="Ex: 4.05%" onChange={e => updateInput(e)} />
+                    placeholder="Ex: 4.05" onChange={e => updateInput(e)} data-cy="interest"/>
             </div>
             <div className="center">
-                <label htmlFor="loanMonths" className="textCenter wrap">Loan Months: </label>
-                <input type="text" id="loanMonths" className="center removeHover form__input" maxLength="9" placeholder="Ex: 12" onChange={e => updateInput(e)}/>
+                <label htmlFor="loanMonths" className="textCenter wrap element__spacing">Loan Months: </label>
+                <input type="text" id="loanMonths" className="center removeHover form__input" maxLength="9" 
+                placeholder="Ex: 12" onChange={e => updateInput(e)} data-cy="loanMonths"/>
             </div>
-            <button type="button" id="addDebt" className="calculateForm__button center__small spacing" name="addDebt" onClick={checkInputs}>Add Debt</button>
+            <button type="button" id="addDebt" className="calculateForm__button center__small spacing" 
+            name="addDebt" onClick={checkInputs} data-cy="addDebt">Add Debt</button>
             <hr className="border" />
-            <ul id="debtInfo" className="removeBulletPointIcons center">
+            <ul id="debtInfo" className="removeBulletPointIcons center" data-cy="debtList">
                 {props.debtInfo.map((debt, index) => {
                     return <li onClick={e => removeDebt(e)} id={index} key={index}> Debt {index + 1}: Principal: {debt[0]} Interest: {debt[1]} Loan Term : {debt[2] + " months"} </li>
                 })}
@@ -83,4 +84,4 @@ const InvestmentCalculatorDebtCalculator = (props) => {
     );
 }
  
-export default InvestmentCalculatorDebtCalculator;
+export default DebtCalculator;

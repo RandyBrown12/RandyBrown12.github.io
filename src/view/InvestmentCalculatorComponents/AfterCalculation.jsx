@@ -1,31 +1,32 @@
-import { takeHomePay } from "../../controller/invest";
+import { takeHomePay, conversionRatiosToYear } from "../../controller/invest";
 import { TaxChart } from "../../controller/taxChart";
 import { debtList } from "../../controller/debtList";
 import { DebtChart } from "../../controller/debtChart";
-const InvestmentCalculatorAfterCalculation = (props) => {
+import { fixedDecimalPlaces } from "../../controller/utility";
+const AfterCalculation = (props) => {
     
     const taxData = takeHomePay(props.input.hours,
         props.input.salary,
         props.input.salaryConversionRate,
-        props.input.salaryConversionRateAfterTax,
+        props.input.salaryConversionRateAfterCalculations,
         props.input.selfEmployeed);
 
     if(!taxData) 
         return;
 
     let chartData = null;
-
+    let income = fixedDecimalPlaces(taxData.incomeAfterTax * conversionRatiosToYear[props.input.salaryConversionRateAfterCalculations]);
     if(props.debtInfo.length > 0) {
-        chartData = debtList({income:taxData.incomeAfterTax, debtsList:props.debtInfo});
+        chartData = debtList({income, debtsList:props.debtInfo});
     }
 
     return (
         <>
-            <form id="afterCalculation" className="form__bg calculateForm spacing">
-                <p className="center"> Before Tax: ${taxData.incomeBeforeTax} / {props.input.salaryConversionRateAfterTax} </p>
-                <p className="center"> After Tax: ${taxData.incomeAfterTax} / {props.input.salaryConversionRateAfterTax} </p>
+            <form id="afterCalculation" className="form__bg calculateForm spacing" data-cy="afterCalculation">
+                <p className="center"> Before Tax: ${taxData.incomeBeforeTax} / {props.input.salaryConversionRateAfterCalculations} </p>
+                <p className="center"> After Tax: ${taxData.incomeAfterTax} / {props.input.salaryConversionRateAfterCalculations} </p>
             </form>
-            <TaxChart allTaxes={[taxData.stateTaxedIncome, taxData.federalTaxedIncome, taxData.ficaTaxedIncome, taxData.incomeAfterTax]}
+            <TaxChart allTaxes={[taxData.federalTaxedIncome, taxData.stateTaxedIncome, taxData.ficaTaxedIncome, taxData.incomeAfterTax]}
                 incomeBeforeTax={taxData.incomeBeforeTax} />
             {chartData && <DebtChart chartData={chartData}/>}
             <p id="afterCalculationInfo" className="textCenter spacing hide">
@@ -42,4 +43,4 @@ const InvestmentCalculatorAfterCalculation = (props) => {
     );
 }
  
-export default InvestmentCalculatorAfterCalculation;
+export default AfterCalculation;
