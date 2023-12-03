@@ -72,7 +72,7 @@ describe('Test Input Form', () => {
 
   it('Verify Reset Button works for every event element', () => {
     cy.get('input[name=hours]').type('40')
-    cy.get('input[name=salary]').type('7.25')
+    cy.get('input[name=salary]').type('10.25')
     cy.get('select[name=salaryConversionRate]').select('Hour')
     cy.get('select[name=afterCalculationTime]').select('Biweek')
     cy.get('button[name=advanced]').click()
@@ -93,6 +93,7 @@ describe('Test Input Form', () => {
     cy.get('div[data-cy=debtChart]').should('exist')
 
     cy.get('button[name=reset]').click()
+
     cy.get('input[name=hours]').should('have.value', '')
     cy.get('input[name=salary]').should('have.value', '')
     cy.get('select[name=salaryConversionRate]').should('have.value','Hour')
@@ -253,5 +254,20 @@ describe('Integrate Input Form with Debt Calculator', () => {
     cy.get('form[data-cy=afterCalculation]').should('exist')
     cy.get('div[data-cy=taxChart]').should('exist')
     cy.get('div[data-cy=debtChart]').should('exist')
+  })
+
+  // Add test to not show stub when zero input.
+  it('Show no alerts when showing advanced option after no input', () => {
+    const stub = cy.stub();
+    cy.on("window:alert", stub);
+    cy.get('button[name=compute]').click().then(() => {
+      expect(stub.getCall(0)).to.be.calledWith('Please enter numbers in the textboxes!')
+      stub.reset();
+    })
+    
+    cy.get('button[name=reset]').click().then(() => { 
+      expect(stub).to.not.be.called;
+    })
+
   })
 })

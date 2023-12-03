@@ -1,27 +1,12 @@
-import { useState, createContext } from "react";
-import InvestmentCalculatorAdvancedOptions from "./AdvancedOptions.jsx";
-import DebtCalculator from "./DebtCalculator.jsx";
-import InvestmentCalculatorAfterCalculation from "./AfterCalculation.jsx";
+import { useState} from "react";
 
-export const mainAppContext = createContext(null);
-
-const InputForm = () => {
-  
-  const [advancedOptionsVisiblility, setVisiblilityAdvancedOptions] = useState(() => false);
-  const [debtCalculatorVisibility, setDebtCalculatorVisibility] = useState(() => false);
-  const [afterCalcuations, setAfterCalcuations] = useState(() => false);
+const InputForm = (props) => {
+  const [hours, setHours] = useState(() => '');
+  const [salary, setSalary] = useState(() => '');
   const [salaryConversionRate, setSalaryConversionRate] = useState(() => "Hour");
   const [salaryConversionRateAfterCalculations, setsalaryConversionRateAfterCalculations] = useState(() => "Year");
   const [hoursDisabled, setHoursDisabled] = useState(() => false);
-  const [selfEmployeed, setSelfEmployeed] = useState(() => false);
-  const [hours, setHours] = useState(() => '');
-  const [salary, setSalary] = useState(() => '');
   const [hoursPlaceholder, setHoursPlaceholder] = useState(() => "Ex: 40");
-  const [debtInfo, setDebtInfo] = useState(() => [ ]);
-
-  const removeAfterCalculations = () => {
-    setAfterCalcuations(false);
-  }
 
   const inputUpdate = e => {
     switch (e.target.name) {
@@ -45,28 +30,28 @@ const InputForm = () => {
       case 'afterCalculationTime':
         setsalaryConversionRateAfterCalculations(e.target.value);
         break;
-      case 'selfEmployeed':
-        setSelfEmployeed(!selfEmployeed);
-        break;
       default:
         window.alert("Input Update Error");
         break;
     }
-    removeAfterCalculations();
+    props.doNotShowAfterCompute();
   }
 
-  const resetStates = () => {
+  const inputResetStates = () => {
     setHours('');
     setSalary('');
     setSalaryConversionRate("Hour");
     setsalaryConversionRateAfterCalculations("Year");
     setHoursDisabled(false);
     setHoursPlaceholder("Ex: 40");
-    setSelfEmployeed(false);
-    setAfterCalcuations(false);
-    setVisiblilityAdvancedOptions(false);
-    setDebtCalculatorVisibility(false);
-    setDebtInfo([ ]);
+    props.InvestmentCalculatorResetStates();
+  }
+
+  const performCalculations = () => {
+    props.doNotShowDebtCalculator();
+    props.doNotShowAdvancedOptions();
+    props.setAfterCalculationInput({hours:parseFloat(hours), salary:parseFloat(salary), salaryConversionRate, salaryConversionRateAfterCalculations});
+    props.showAfterCompute();
   }
 
   return (
@@ -107,32 +92,27 @@ const InputForm = () => {
           <option value="Week">Week</option>
         </select>
         <div className="center">
-          <button type="button" id="compute" className="calculateForm__button element__spacing" name="compute" onClick={() => setAfterCalcuations(true)}>
+          <button type="button" id="compute" className="calculateForm__button element__spacing" name="compute" onClick={performCalculations}>
             Calculate Pay
           </button>
-          <button type="button" className="calculateForm__button element__spacing" name="reset" onClick={resetStates}>
+          <button 
+            type="button" 
+            className="calculateForm__button element__spacing" 
+            name="reset" 
+            onClick={inputResetStates}
+          >
             Reset
           </button>
-          <button type="button" className="calculateForm__button element__spacing" name="advanced" onClick={() => setVisiblilityAdvancedOptions(!advancedOptionsVisiblility)}>
+          <button 
+            type="button" 
+            className="calculateForm__button element__spacing" 
+            name="advanced" 
+            onClick={props.showAdvanced}
+          >
             Advanced
           </button>
         </div>
       </form>
-      {afterCalcuations &&  
-          <InvestmentCalculatorAfterCalculation
-            input={{ hours:parseFloat(hours), 
-            salary:parseFloat(salary), 
-            salaryConversionRate, 
-            salaryConversionRateAfterCalculations, 
-            selfEmployeed }} 
-            debtInfo={debtInfo}/>}
-      {advancedOptionsVisiblility && <InvestmentCalculatorAdvancedOptions
-        visibility={() => setDebtCalculatorVisibility(!debtCalculatorVisibility)}
-        employed={e => inputUpdate(e)} />}
-      {debtCalculatorVisibility && 
-        <mainAppContext.Provider value={setDebtInfo}>
-          <DebtCalculator debtInfo={debtInfo} removeAfterCalculations={() => removeAfterCalculations()} />
-        </mainAppContext.Provider>}
     </>
   );
 }

@@ -1,18 +1,15 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { isNumber } from "../../controller/utility";
-import { mainAppContext } from "./InputForm";
-
 const DebtCalculator = (props) => {
     
-    const setDebtInfo = useContext(mainAppContext);
     const [principal, setPrincipal] = useState(() => 0);
     const [interest, setInterest] = useState(() => 0);
     const [loanMonths, setLoanMonths] = useState(() => 0);
     const maxDebts = 5;
 
     const removeDebt = e => {
-        props.removeAfterCalculations();
-        setDebtInfo(props.debtInfo.filter((_, index) => index !== parseInt(e.target.id)));
+        props.doNotShowAdvancedOptions();
+        props.setDebts(props.debts.filter((_, index) => index !== parseInt(e.target.id)));
     }
 
     const updateInput = e => {
@@ -40,7 +37,7 @@ const DebtCalculator = (props) => {
                 throw new Error("Inputs does not have correct format!");
             } else if(parseFloat(principal) <= 0 || parseFloat(interest) <= 0 || parseFloat(loanMonths) <= 0) {
                 throw new Error("Inputs must be greater than 0!");
-            } else if(props.debtInfo.length >= maxDebts) {
+            } else if(props.debts.length >= maxDebts) {
                 throw new Error("Debt Calculator has reached max amount of debts!");
             }
         } catch (err) {
@@ -48,8 +45,8 @@ const DebtCalculator = (props) => {
             return;
         }
 
-        props.removeAfterCalculations();
-        setDebtInfo([...props.debtInfo, [principal, interest, loanMonths]]);
+        props.doNotShowAfterCompute();
+        props.setDebts([...props.debts, {principal:parseFloat(principal), interest:parseFloat(interest), loanMonths:parseFloat(loanMonths)}]);
     }
 
     return (
@@ -75,9 +72,15 @@ const DebtCalculator = (props) => {
             <button type="button" id="addDebt" className="calculateForm__button center__small spacing" 
             name="addDebt" onClick={checkInputs} data-cy="addDebt">Add Debt</button>
             <hr className="border" />
-            <ul id="debtInfo" className="removeBulletPointIcons center" data-cy="debtList">
-                {props.debtInfo.map((debt, index) => {
-                    return <li onClick={e => removeDebt(e)} id={index} key={index}> Debt {index + 1}: Principal: {debt[0]} Interest: {debt[1]} Loan Term : {debt[2] + " months"} </li>
+            <ul id="debts" className="removeBulletPointIcons center" data-cy="debtList">
+                {props.debts.map((debt, index) => {
+                    return <li 
+                            onClick={e => removeDebt(e)} 
+                            id={index} 
+                            key={index}
+                            > 
+                            Debt {index + 1}: Principal: {debt.principal} Interest: {debt.interest} Loan Term : {debt.loanMonths + " months"} 
+                            </li>
                 })}
             </ul>
         </form>

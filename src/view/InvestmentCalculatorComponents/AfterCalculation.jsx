@@ -3,21 +3,21 @@ import { TaxChart } from "../../controller/taxChart";
 import { debtList } from "../../controller/debtList";
 import { DebtChart } from "../../controller/debtChart";
 import { fixedDecimalPlaces } from "../../controller/utility";
+import { useMemo } from "react";
 const AfterCalculation = (props) => {
-    
-    const taxData = takeHomePay(props.input.hours,
-        props.input.salary,
-        props.input.salaryConversionRate,
-        props.input.salaryConversionRateAfterCalculations,
-        props.input.selfEmployeed);
+
+    const taxData = useMemo(() => takeHomePay(props.input.hours, props.input.salary, props.input.salaryConversionRate, 
+        props.input.salaryConversionRateAfterCalculations, props.input.selfEmployed), 
+        [props.input.hours, props.input.salary, props.input.salaryConversionRate, 
+        props.input.salaryConversionRateAfterCalculations, props.input.selfEmployed]);
 
     if(!taxData) 
         return;
 
     let chartData = null;
-    let income = fixedDecimalPlaces(taxData.incomeAfterTax * conversionRatiosToYear[props.input.salaryConversionRateAfterCalculations]);
-    if(props.debtInfo.length > 0) {
-        chartData = debtList({income, debtsList:props.debtInfo});
+    if(props.debts.length > 0) {
+        let income = fixedDecimalPlaces(taxData.incomeAfterTax * conversionRatiosToYear.get(props.input.salaryConversionRateAfterCalculations));
+        chartData = debtList({income, debtsList:props.debts});
     }
 
     return (
@@ -28,8 +28,8 @@ const AfterCalculation = (props) => {
             </form>
             <TaxChart allTaxes={[taxData.federalTaxedIncome, taxData.stateTaxedIncome, taxData.ficaTaxedIncome, taxData.incomeAfterTax]}
                 incomeBeforeTax={taxData.incomeBeforeTax} />
-            {chartData && <DebtChart chartData={chartData}/>}
-            <p id="afterCalculationInfo" className="textCenter spacing hide">
+            {chartData && <DebtChart chartData={chartData} />}
+            <p id="afterCalculationInfo" className="textCenter spacing">
             The IRS uses <a
                 href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-html-tax-year-2022">tax
                 brackets</a> to calcuate the marginal federal tax <br/>
